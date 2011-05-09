@@ -1,13 +1,12 @@
 using System;
-using System.ComponentModel;
 using System.Configuration;
-using System.Web;
 
 namespace Compression
 {
-    public class MimeFormatElement: ConfigurationElement
+    public class MimeFormatElement : ConfigurationElement
     {
         #region Constructors
+
         /// <summary>
         /// Predefines the valid properties and prepares
         /// the property collection.
@@ -15,24 +14,27 @@ namespace Compression
         static MimeFormatElement()
         {
             // Predefine properties here
-            var mimeFormatType = typeof(MimeFormat);
+            Type mimeFormatType = typeof (MimeFormat);
             PMimeFormat = new ConfigurationProperty(
                 "mimeFormat",
                 mimeFormatType,
                 "*/*",
                 ConfigurationPropertyOptions.IsRequired
-            );
+                );
             PEnabled = new ConfigurationProperty(
                 "enabled",
-                typeof(bool),
+                typeof (bool),
                 false,
                 ConfigurationPropertyOptions.IsRequired
-            );
+                );
 
-            PProperties = new ConfigurationPropertyCollection {
-                PMimeFormat, PEnabled
-            };
+            PProperties = new ConfigurationPropertyCollection
+                              {
+                                  PMimeFormat,
+                                  PEnabled
+                              };
         }
+
         #endregion
 
         #region Static Fields
@@ -44,13 +46,14 @@ namespace Compression
         #endregion
 
         #region Properties
+
         /// <summary>
         /// Gets the MimeFormat setting.
         /// </summary>
         [ConfigurationProperty("mimeFormat", IsRequired = true)]
         public MimeFormat MimeFormat
         {
-            get { return (MimeFormat)base[PMimeFormat]; }
+            get { return (MimeFormat) base[PMimeFormat]; }
         }
 
         /// <summary>
@@ -59,7 +62,7 @@ namespace Compression
         [ConfigurationProperty("enabled")]
         public bool Enabled
         {
-            get { return (bool)base[PEnabled]; }
+            get { return (bool) base[PEnabled]; }
         }
 
         /// <summary>
@@ -69,6 +72,7 @@ namespace Compression
         {
             get { return PProperties; }
         }
+
         #endregion
     }
 }

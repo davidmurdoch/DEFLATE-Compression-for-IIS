@@ -8,20 +8,23 @@ namespace Compression
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            return sourceType == typeof(string);
+            return sourceType == typeof (string);
         }
+
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            return new MimeFormat((string)value);
+            return new MimeFormat((string) value);
         }
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            return destinationType == typeof(string);
+            return destinationType == typeof (string);
         }
-        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value,
+                                         Type destinationType)
         {
-            var val = (MimeFormat)value;
+            var val = (MimeFormat) value;
             return val.Type + "/" + val.SubType;
         }
     }

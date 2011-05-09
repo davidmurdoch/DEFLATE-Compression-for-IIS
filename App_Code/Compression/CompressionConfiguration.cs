@@ -9,27 +9,30 @@ namespace Compression
     public class CompressionConfiguration : ConfigurationSection
     {
         #region Constructors
+
         static CompressionConfiguration()
         {
             PFormat = new ConfigurationProperty(
                 "format",
-                typeof(CompressionFormat),
+                typeof (CompressionFormat),
                 CompressionFormat.deflate, // deflate is preferred
                 ConfigurationPropertyOptions.None
-            );
+                );
 
             PStaticTypes = new ConfigurationProperty(
                 "staticTypes",
-                typeof(StaticTypesElementCollection),
+                typeof (StaticTypesElementCollection),
                 null,
                 ConfigurationPropertyOptions.IsRequired
-            );
+                );
 
-            PProperties = new ConfigurationPropertyCollection {
-                PFormat,
-                PStaticTypes
-            };
+            PProperties = new ConfigurationPropertyCollection
+                              {
+                                  PFormat,
+                                  PStaticTypes
+                              };
         }
+
         #endregion
 
         #region Enums
@@ -61,7 +64,7 @@ namespace Compression
         [ConfigurationProperty("format", IsRequired = false)]
         public CompressionFormat Format
         {
-            get { return (CompressionFormat)base[PFormat]; }
+            get { return (CompressionFormat) base[PFormat]; }
         }
 
         /// <summary>
@@ -78,11 +81,13 @@ namespace Compression
         [ConfigurationProperty("staticTypes")]
         public StaticTypesElementCollection StaticTypes
         {
-            get { return (StaticTypesElementCollection)base[PStaticTypes]; }
+            get { return (StaticTypesElementCollection) base[PStaticTypes]; }
         }
+
         #endregion
 
         #region GetSection Pattern
+
         private static CompressionConfiguration _section;
 
         /// <summary>
@@ -122,12 +127,14 @@ namespace Compression
 
                 if (_section == null)
                 {
-                    throw new ConfigurationErrorsException("The <" + definedName + "> section is not defined in your " + cfgFileName + " file!");
+                    throw new ConfigurationErrorsException("The <" + definedName + "> section is not defined in your " +
+                                                           cfgFileName + " file!");
                 }
             }
 
             return _section;
         }
+
         #endregion
 
         #region Methods
@@ -136,7 +143,10 @@ namespace Compression
         {
             try
             {
-                foreach (var staticType in from sType in StaticTypes.OfType<MimeFormatElement>() let mimeFormat = sType.MimeFormat where mimeFormat.Matches(contentTypeStr) select sType)
+                foreach (MimeFormatElement staticType in from sType in StaticTypes.OfType<MimeFormatElement>()
+                                                         let mimeFormat = sType.MimeFormat
+                                                         where mimeFormat.Matches(contentTypeStr)
+                                                         select sType)
                 {
                     return staticType.Enabled;
                 }
@@ -161,7 +171,8 @@ namespace Compression
                 {
                     foundDeflate = true;
                 }
-                else if ((acceptEncodingValue.Contains("gzip") || acceptEncodingValue.StartsWith("x-gzip")) && CanAcceptQuality(acceptEncodingValue))
+                else if ((acceptEncodingValue.Contains("gzip") || acceptEncodingValue.StartsWith("x-gzip")) &&
+                         CanAcceptQuality(acceptEncodingValue))
                 {
                     foundGZip = true;
                 }
@@ -184,7 +195,7 @@ namespace Compression
             return foundDeflate ? "deflate" : (foundGZip ? "gzip" : null);
         }
 
-        static bool CanAcceptQuality(string acceptEncodingValue)
+        private static bool CanAcceptQuality(string acceptEncodingValue)
         {
             int qParam = acceptEncodingValue.IndexOf("q=");
 
@@ -195,11 +206,10 @@ namespace Compression
                 try
                 {
                     val = float.Parse(acceptEncodingValue.Substring(qParam + 2,
-                        acceptEncodingValue.Length - (qParam + 2)));
+                                                                    acceptEncodingValue.Length - (qParam + 2)));
                 }
                 catch (FormatException)
                 {
-
                 }
             }
             return (val > 0.0f);
