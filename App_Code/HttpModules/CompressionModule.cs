@@ -7,6 +7,8 @@ namespace HttpModules
 {
     public class CompressionModule : IHttpModule
     {
+        #region IHttpModule Members
+
         public void Dispose()
         {
             // nothing to dispose.
@@ -17,12 +19,14 @@ namespace HttpModules
             context.ReleaseRequestState += OnReleaseRequestState;
         }
 
+        #endregion
+
         private static void OnReleaseRequestState(object sender, EventArgs e)
         {
-            CompressContent((HttpApplication)sender);
+            CompressContent((HttpApplication) sender);
         }
 
-        static void CompressContent(HttpApplication context)
+        private static void CompressContent(HttpApplication context)
         {
             if (context.Context.Items.Contains("AlreadyCompressed")) return;
 
@@ -33,23 +37,25 @@ namespace HttpModules
 
             CompressionConfiguration settings = CompressionConfiguration.GetSection();
 
-            var acceptedTypes = context.Request.Headers["Accept-Encoding"];
+            string acceptedTypes = context.Request.Headers["Accept-Encoding"];
             if (acceptedTypes == null) return;
-            
-            var contentType = response.ContentType.Split(';')[0].Trim();
+
+            string contentType = response.ContentType.Split(';')[0].Trim();
             if (!settings.IsContentTypeCompressed(contentType)) return;
 
             string compressionScheme = settings.GetCompressionType(acceptedTypes);
 
-            var compressed = false;
+            bool compressed = false;
             switch (compressionScheme)
             {
                 case "deflate":
-                    context.Response.Filter = new DeflateStream(response.Filter, CompressionMode.Compress, CompressionLevel.BestCompression, false);
+                    context.Response.Filter = new DeflateStream(response.Filter, CompressionMode.Compress,
+                                                                CompressionLevel.BestCompression, false);
                     compressed = true;
                     break;
                 case "gzip":
-                    context.Response.Filter = new GZipStream(response.Filter, CompressionMode.Compress, CompressionLevel.BestCompression, false);
+                    context.Response.Filter = new GZipStream(response.Filter, CompressionMode.Compress,
+                                                             CompressionLevel.BestCompression, false);
                     compressed = true;
                     break;
             }
