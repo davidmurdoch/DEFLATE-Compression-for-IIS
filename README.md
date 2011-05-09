@@ -7,7 +7,7 @@ Fork it, edit it, pull-request it, make fun of it, whatever.
 
 TODO:
 
-  - Add option to limit compression to responses that are over a certain length (`minLengthForComp`)
+  - Add option to limit compression to responses that are over a certain length (like `minFileSizeForComp`)
   - Do we need to filter out responses that don't have content, like 204, 303, and 304?
   - Caching. 
   - Benchmark against the default compression mechanism. Is it even worth it?
